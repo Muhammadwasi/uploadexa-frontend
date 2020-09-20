@@ -21,12 +21,14 @@ class UploadPage extends React.Component{
         };
         this.msgs={
             fileAlreadyAdded: "The file has already been added",
-            fileSizeTooLarge:"The file size can't be greater than 100 MB"
+            fileSizeTooLarge:"The file size can't be greater than 100 MB",
+            fileNotUploaded:  "Oops! Some files haven't uploaded!"
         }
         this.onAddFile=this.onAddFile.bind(this);
         this.onRemoveFile=this.onRemoveFile.bind(this);
         this.getFileUploadPage=this.getFileUploadPage.bind(this);
     }
+
     showAlert=function(color, text){
         this.setState({
             alertVisible:true,
@@ -38,9 +40,10 @@ class UploadPage extends React.Component{
             },2000)
         });
 
-    }
+    };
+
     onAddFile=function(event){
-        console.log("a file(s) is uploaded!"+event.target.value)
+        console.log("a file(s) is added!"+event.target.value)
         let addedFiles=[...this.state.addedFiles]
         let fileList=event.target.files;
         for(let i =0;i<fileList.length;i++){
@@ -63,8 +66,6 @@ class UploadPage extends React.Component{
                 console.log(this.msgs.fileSizeTooLarge)
                 this.showAlert("danger",this.msgs.fileSizeTooLarge)
             }
-
-
         }
         this.setState(function (prevState) {
             return {
@@ -91,28 +92,35 @@ class UploadPage extends React.Component{
 
         return new Promise((resolve ,reject)=>{
             axios(options).then((response)=>{
-                this.setState(function (prevState) {
-                    let newFiles=prevState.addedFiles.map( (file)=> {
-                        if(file.id===fileId){
-                            file.isUploaded=true
-                            file.downloadUrl=response.data.file.downloadUrl
-                            file.awsObjectId=response.data.file.id
+                if(response.data.file){
+                    this.setState(function (prevState) {
+
+                        let newFiles=prevState.addedFiles.map( (file)=> {
+                            if(file.id===fileId){
+                                file.isUploaded=true
+                                file.downloadUrl=response.data.file.downloadUrl
+                                file.awsObjectId=response.data.file.id
+                            }
+                            return file
+                        });
+                        return {
+                            addedFiles: newFiles,
+                            isAFileAdded: newFiles.length===0? false :true
                         }
-                        return file
                     });
-                    return {
-                        addedFiles: newFiles,
-                        isAFileAdded: newFiles.length===0? false :true
-                    }
-                });
-                resolve(response.data.file)
-                console.log("response: ")
-                console.log(response.data)
-                document.getElementById(`loader-${fileId}`).classList.toggle("hidden")
-                document.getElementById(`upload-done-${fileId}`).classList.toggle("hidden")
+                    resolve(response.data.file)
+                    console.log("response: ")
+                    console.log(response.data)
+                    document.getElementById(`loader-${fileId}`).classList.toggle("hidden")
+                    document.getElementById(`upload-done-${fileId}`).classList.toggle("hidden")
+                }
+                else{
+                    throw "File not uploaded!"
+                }
             }).catch((error)=>{
                 reject(error)
                 console.log(error)
+                this.showAlert("danger",this.msgs.fileNotUploaded)
                 document.getElementById(`loader-${fileId}`).classList.toggle("hidden")
                 document.getElementById(`remove-icon-${fileId}`).classList.toggle("hidden")
             })
@@ -120,15 +128,17 @@ class UploadPage extends React.Component{
     };
 
     onGetLink=function(){
-        //document.getElementById("loader").classList.toggle("hidden")
         let uploadFileRequests=[];
         let options,data;
         this.state.addedFiles.forEach((file)=>{
+
+         if (file.isUploaded===false){
+            let api = "v1/storage/uploadFile";
             data = new FormData();
             data.append('file',file.fileObj);
             options={
                 method: 'post',
-                url:"v1/storage/uploadFile",
+                url: api,
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -145,12 +155,12 @@ class UploadPage extends React.Component{
 
             };
             uploadFileRequests.push(this.getFileRequest(options,file.id))
+         }
         });
 
         Promise.all(uploadFileRequests).then((allFilesData)=>{
             console.log(allFilesData)
             this.postUserContent(allFilesData)
-            // document.getElementById("loader").classList.toggle("hidden")
 
         }).catch((error)=>{
             console.log(error)

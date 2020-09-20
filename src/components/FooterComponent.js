@@ -9,11 +9,11 @@ function FooterComponent() {
     return (
         <div className={'footer'}>
             <div className={"footer-social-media-icons"}>
-                <IconContext.Provider  value={{ size:"2rem",className:"footer-icon"}}>
+                {/*<IconContext.Provider  value={{ size:"2rem",className:"footer-icon"}}>
                     <a href={youtubeUrl} target="_blank">
                         <FaYoutube />
                     </a>
-                </IconContext.Provider>
+                </IconContext.Provider>*/}
                 <IconContext.Provider  value={{ size:"2rem",className:"footer-icon"}}>
                     <a href={linkedinUrl} target="_blank">
                         <FaLinkedin />
