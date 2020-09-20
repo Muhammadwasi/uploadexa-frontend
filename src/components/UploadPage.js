@@ -221,14 +221,14 @@ class UploadPage extends React.Component{
     render(){
         return (
             <IconContext.Provider value={{ color: "gray", size:"2rem"}}>
-                <Alert style={{position:"fixed", margin: "1rem auto"}} color={this.state.alertColor} isOpen={this.state.alertVisible} >
-                    {this.state.alertText}
-                </Alert>
+
                 <div className={"main-upload-container"}>
 
                     {this.getFileUploadPage()}
                 </div>
-
+                <Alert style={{position:"fixed", margin: "1rem auto"}} color={this.state.alertColor} isOpen={this.state.alertVisible} >
+                    {this.state.alertText}
+                </Alert>
 
             </IconContext.Provider>
         );
