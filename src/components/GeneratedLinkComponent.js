@@ -1,5 +1,6 @@
 import React from "react";
 import {IconContext} from 'react-icons';
+import QRCode from 'qrcode.react'
 
 import {MdContentCopy,MdCheckCircle} from 'react-icons/md'
 
@@ -55,12 +56,19 @@ class GeneratedLinkComponent extends React.Component{
         );
     };
 
-
+    getQRCode=function(){
+        return (
+            <div className={"generated-link-component-qr-code"}>
+                <QRCode value={this.props.contentDownloadUrl} />
+            </div>
+        )
+    };
     render(){
 
         return (
             <div className={"generated-link-component"}>
                 {this.getFileListItems()}
+                {this.getQRCode()}
                 {this.getCopyLinkButton()}
             </div>
 
