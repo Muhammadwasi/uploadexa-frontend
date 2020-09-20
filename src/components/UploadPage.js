@@ -4,6 +4,7 @@ import AddFileComponent from './AddFileComponent';
 import {IconContext} from "react-icons";
 import axios from 'axios';
 import GeneratedLinkComponent from "./GeneratedLinkComponent";
+import { Alert } from 'reactstrap';
 
 class UploadPage extends React.Component{
     constructor(props) {
@@ -13,37 +14,62 @@ class UploadPage extends React.Component{
             addedFiles: [],
             redirect:false,
             contentId:null,
-            contentDownloadUrl:null
+            contentDownloadUrl:null,
+            alertVisible:false,
+            alertColor:null,
+            alertText: null
         };
-
+        this.msgs={
+            fileAlreadyAdded: "The file has already been added",
+            fileSizeTooLarge:"The file size can't be greater than 100 MB"
+        }
         this.onAddFile=this.onAddFile.bind(this);
         this.onRemoveFile=this.onRemoveFile.bind(this);
         this.getFileUploadPage=this.getFileUploadPage.bind(this);
     }
+    showAlert=function(color, text){
+        this.setState({
+            alertVisible:true,
+            alertColor:color,
+            alertText:text
+        },()=>{
+            window.setTimeout(()=>{
+                this.setState({alertVisible:false})
+            },2000)
+        });
 
+    }
     onAddFile=function(event){
         console.log("a file(s) is uploaded!"+event.target.value)
         let addedFiles=[...this.state.addedFiles]
         let fileList=event.target.files;
         for(let i =0;i<fileList.length;i++){
-            let newFile={
-                name: fileList[i].name,
-                id: fileList[i].name,
-                fileObj:fileList[i],
-                isUploaded:false,
-                downloadUrl:null,
-                awsObjectId:null
-            };
-            if(addedFiles.some(file=>file.id===newFile.id)){
-                console.log("The file is already added")
+            if ((fileList[i].size/1024/1024) <= 100){
+                let newFile={
+                    name: fileList[i].name,
+                    id: fileList[i].name,
+                    fileObj:fileList[i],
+                    isUploaded:false,
+                    downloadUrl:null,
+                    awsObjectId:null
+                };
+                if(addedFiles.some(file=>file.id===newFile.id)){
+                    console.log(this.msgs.fileAlreadyAdded)
+                    this.showAlert("info",this.msgs.fileAlreadyAdded)
+                }else{
+                    addedFiles.push(newFile)
+                }
             }else{
-                addedFiles.push(newFile)
+                console.log(this.msgs.fileSizeTooLarge)
+                this.showAlert("danger",this.msgs.fileSizeTooLarge)
             }
+
+
         }
         this.setState(function (prevState) {
             return {
-                isAFileAdded: true,
-                addedFiles: addedFiles
+                addedFiles: addedFiles,
+                isAFileAdded: addedFiles.length>0
             }
         })
     };
@@ -195,7 +221,11 @@ class UploadPage extends React.Component{
     render(){
         return (
             <IconContext.Provider value={{ color: "gray", size:"2rem"}}>
+                <Alert style={{position:"fixed", margin: "1rem auto"}} color={this.state.alertColor} isOpen={this.state.alertVisible} >
+                    {this.state.alertText}
+                </Alert>
                 <div className={"main-upload-container"}>
+
                     {this.getFileUploadPage()}
                 </div>
 

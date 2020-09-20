@@ -1,11 +1,10 @@
 import React from 'react';
 import {FaYoutube,FaLinkedin,FaGithub} from 'react-icons/fa'
 import {IconContext} from "react-icons";
-import {Link} from 'react-router-dom';
 function FooterComponent() {
-    const youtubeUrl="https://fontawesome.com/how-to-use/on-the-web/using-with/react",
-        linkedinUrl="www.google.com",
-        githubUrl="www.google.com";
+    const youtubeUrl="https://www.youtube.com/channel/UCjESH79SMy8t7ZKpDKWsv_A",
+        linkedinUrl="https://www.linkedin.com/in/muhammad-wasi-naseer/",
+        githubUrl="https://github.com/Muhammadwasi";
 
     return (
         <div className={'footer'}>
