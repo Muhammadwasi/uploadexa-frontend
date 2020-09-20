@@ -1,8 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './components/App';
 import * as serviceWorker from './serviceWorker';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
+import {config} from "./Constants";
+
+axios.defaults.baseURL = config.url.API_URL;
+axios.defaults.headers={'Access-Control-Allow-Origin':'*',
+    "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+    "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Access-Control-Allow-Origin,Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+}
 
 ReactDOM.render(
   <React.StrictMode>
