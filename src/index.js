@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import {config} from "./Constants";
+import {BrowserRouter as Router} from 'react-router-dom';
 
 axios.defaults.baseURL = config.url.API_URL;
 axios.defaults.headers={'Access-Control-Allow-Origin':'*',
@@ -15,7 +16,10 @@ axios.defaults.headers={'Access-Control-Allow-Origin':'*',
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <Router>
+          <App />
+      </Router>
+
   </React.StrictMode>,
   document.getElementById('root')
 );

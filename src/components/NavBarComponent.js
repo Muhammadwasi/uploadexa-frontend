@@ -35,10 +35,10 @@ const NavBarComponent = (props) => {
                 <Collapse className={"nav-bar-toggler"} isOpen={isOpen} navbar>
                     <Nav className="ml-auto nav-item-container" navbar>
                         <NavItem>
-                            <NavLink href="/" className={"nav-item"}>Get Link</NavLink>
+                            <NavLink tag={Link} to="/" className={"nav-item"}>Get Link</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/about"  className={"nav-item"}>About Me</NavLink>
+                            <NavLink tag={Link} to="/about"  className={"nav-item"}>About</NavLink>
                         </NavItem>
                     </Nav>
                 </Collapse>
