@@ -12,8 +12,12 @@ axios.defaults.baseURL = config.url.API_URL;
 axios.defaults.headers={'Access-Control-Allow-Origin':'*',
     "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
     "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Access-Control-Allow-Origin,Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-}
+};
+function overwrite() {}
 
+if (process.env.NODE_ENV !== 'development') {
+    console.log = overwrite;
+}
 ReactDOM.render(
   <React.StrictMode>
       <Router>
